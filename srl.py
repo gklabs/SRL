@@ -6,18 +6,29 @@ Haritha G, Giridhar K
 
 Spring 2020
 Instructions for execution
+This file can be executed by replacing the train, test and glove embeddings paths
+from terminal:
+	python3 <filename>
 
 Pseudocode
 1. Read training data
-	Repeat data point with one unique verb/predicate if 
-		the number of verbs is >1
-		Represent the verb under consideration by a flag
+	Repeat data point with one unique verb/predicate if
+	the number of verbs is >1
+	Represent the verb under consideration by a flag
 2. Embedding
-	Using GloVe embeddings 
-		50 dimensions
+	Using GloVe embeddings
+	50 dimensions
 3. Build a Feed Forward Neural Network
 	3 Hidden layers of size 20 each
-
+4. Train FFNN
+	SGD optimizer
+	alpha= 0.01
+	Epochs= 100
+	BAtch size = 1000
+	Store and plot validation loss
+5. Test data
+	Change the format of test data to match the training
+	Predict the results for the test data with the final model
 
 '''
 
