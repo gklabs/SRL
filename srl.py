@@ -81,7 +81,7 @@ def get_data(path,dataname):
 	for d in dataset:
 		newlist.append(d.split())
 
-	newlist.append([])
+	newlist.append([]) 
 	maxlen= max(len(x) for x in newlist)
 	print("sentence of max length is ",maxlen)
 
