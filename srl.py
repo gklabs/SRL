@@ -65,6 +65,12 @@ from sklearn.metrics import accuracy_score,precision_score,f1_score,recall_score
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 
+'''
+This method reads and returns the data given the data path
+1. reads data from given path
+2. Reframes the data such that the sentence is repeated per number of verbs
+3. returns the dataframe
+'''
 def get_data(path,dataname):
 
 	newlist=[]
@@ -147,6 +153,11 @@ def get_data(path,dataname):
 
 	return BigDF
 
+'''
+This method takes care of splitting the data
+1.randomize data points
+2. split ratio 80:20 for train and validation
+'''
 def train_validation_set(df,y):
 	#train, validation and test
 	X_train, X_val, y_train, y_val = train_test_split(df, y, test_size=0.2, random_state=1, shuffle=False)
@@ -158,6 +169,9 @@ def train_validation_set(df,y):
 
 	return X_train, X_val, y_train, y_val
 
+'''
+This method reads loads the glove embedding vector representation
+'''
 def glove_embedding():
 	embeddings_dict= {}
 	with open("glove.6B.50d.txt", 'r', encoding="utf-8") as f:
@@ -168,7 +182,9 @@ def glove_embedding():
 			embeddings_dict[word] = vector
 	return embeddings_dict
 
-#creating vocabulary
+'''
+This method creates vocab for unique words in the corpus
+'''
 def createvocab(text):
 	  V=[]
 	  for word in text:
@@ -178,6 +194,11 @@ def createvocab(text):
 			  V.append(word)
 	  return V
 
+'''
+This method takes text and embeddings as input
+1.look up embeddings for the words from GLoVe
+2. retuns the embeddings that would act as weights later on for neural network
+'''
 #look up embeddings for the words from GLoVe
 def createWeightsLookup(text, embedding,embedding_dim):
   vocab = createvocab(text)
@@ -199,7 +220,15 @@ def createWeightsLookup(text, embedding,embedding_dim):
   return vocab, weights_matrix
 
 
-
+'''
+Feedforward neural network class
+3 layers, 2 hidden and one output layer
+input size : feature set size
+hidden size : 20
+output size : labelsize
+hidden activation : sigmoid
+output activaltion : softmax
+'''
 
 class FFNN(nn.Module):
 	def __init__(self, input_size, hidden_size):
@@ -219,6 +248,18 @@ class FFNN(nn.Module):
 		a4= self.softmax(a3)
 		return a4
 
+'''
+training runs for 
+100 epochs
+1000 batch size
+0.01 learning rate.
+For every epoch:
+	The training is done in batches - forward pass and back propagate
+	Validation is performed and accuracy and loss is computed
+
+train loss, validation loss and validatiuon accuracy are plotted
+
+'''
 def training(X_train, y_train, X_val, y_val,lr= 0.01,epochs=100,batch_size=1000):
 	model= FFNN(X_train.shape[1], 20)
 	trainloss = []
@@ -295,7 +336,9 @@ def training(X_train, y_train, X_val, y_val,lr= 0.01,epochs=100,batch_size=1000)
 
 
 
-
+'''
+This methods return the predictions for test data
+'''
 
 def testing(model, test_data, test_labels):
 
@@ -363,6 +406,7 @@ def main():
 
 	print(type(other_input))
 	print(other_input.shape)
+	#Concatenate word and other columns into a dataframe
 
 	full_train_matrix= np.concatenate((embedding_matrix,other_input.toarray()), axis=1)
 	full_valid_matrix= np.concatenate((validation_embedding_matrix,other_input_validation.toarray()), axis=1)
